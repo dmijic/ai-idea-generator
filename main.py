@@ -1,12 +1,12 @@
 import os
 import json
 from dotenv import load_dotenv
-from anthropic import Anthropic
+from anthropic import Anthropic as ai
 from pathlib import Path
 from datetime import datetime
 
 load_dotenv()
-client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+client = ai(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 def generate_ideas(topic: str) -> str:
     message = client.messages.create(
@@ -28,10 +28,11 @@ def save_ideas(topic: str, ideas: list[str]) -> Path:
 
 def main():
     topic = input("Unesi temu: ")
+    raw = None
     try:
         raw = generate_ideas(topic)
-        ideas = json.loads(raw); 
-        saved = save_ideas(topic, ideas); 
+        ideas = json.loads(raw)
+        saved = save_ideas(topic, ideas)
         print(f"Spremljeno u {saved}")
     except json.JSONDecodeError:
         print(f"Claude nije vratio validni JSON: {raw}")
