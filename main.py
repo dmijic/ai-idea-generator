@@ -1,12 +1,12 @@
 import os
 import json
 from dotenv import load_dotenv
-from anthropic import Anthropic as ai
+from anthropic import Anthropic
 from pathlib import Path
 from datetime import datetime
 
 load_dotenv()
-client = ai(api_key=os.getenv("ANTHROPIC_API_KEY"))
+client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 def generate_ideas(topic: str) -> str:
     message = client.messages.create(
