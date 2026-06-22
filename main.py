@@ -26,12 +26,18 @@ def save_ideas(topic: str, ideas: list[str]) -> Path:
     Path(filename).write_text(json.dumps(data, indent=2, ensure_ascii=False))
     return Path(filename)
 
+def print_ideas(ideas: list[str]):
+    print("Generirane ideje:")
+    for i, idea in enumerate(ideas, start=1):
+        print(f"{i}. {idea}")
+
 def main():
     topic = input("Unesi temu: ")
     raw = None
     try:
         raw = generate_ideas(topic)
         ideas = json.loads(raw)
+        print_ideas(ideas)
         saved = save_ideas(topic, ideas)
         print(f"Spremljeno u {saved}")
     except json.JSONDecodeError:
