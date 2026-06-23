@@ -29,8 +29,9 @@ def save_ideas(topic: str, ideas: list[str]) -> Path:
 
 def parse_args():
     parser = argparse.ArgumentParser(description="AI Idea Generator")
-    parser.add_argument("--topic", type=str, required=True, help="Tema za generiranje ideja")
+    parser.add_argument("--topic", type=str, help="Tema za generiranje ideja")
     parser.add_argument("--count", type=int, default=3, choices=range(1, 11), help="Broj ideja za generiranje")
+    parser.add_argument("--history", action="store_true", help="Prikaži povijest generiranih ideja")
     return parser.parse_args()
 
 def print_ideas(ideas: list[str]):
@@ -38,17 +39,39 @@ def print_ideas(ideas: list[str]):
     for i, idea in enumerate(ideas, start=1):
         print(f"{i}. {idea}")
 
+def show_history():
+    files = sorted(Path("output").iterdir())
+    for f in files:
+        data = json.loads(Path(f).read_text())
+        topic = data.get("topic", "Nepoznata tema")
+        ideas = data.get("ideas", [])
+        timestamp = datetime.fromisoformat(data.get("generated_at", "Nepoznat datum"))
+        print("-" * 40)
+        print(f"Datum generiranja: {timestamp.strftime('%d.%m.%Y. u %H:%M')}")
+        print(f"Tema: {topic}")
+        print("Ideje:")
+        for i, idea in enumerate(ideas, start=1):
+            print(f"  {i}. {idea}")
+
+
 def main():
     args = parse_args()
     topic = args.topic
     count = args.count
     raw = None
+    if args.history:
+        show_history()
+        return
+    if not args.topic:
+        print("Greška: Tema je obavezna. Dodaj --topic 'tvoja tema' argument.")
+        return
     try:
         raw = generate_ideas(topic, count)
         ideas = json.loads(raw)
         print_ideas(ideas)
         saved = save_ideas(topic, ideas)
         print(f"Spremljeno u {saved}")
+        show_history()
     except json.JSONDecodeError:
         print(f"Claude nije vratio validni JSON: {raw}")
         return
