@@ -34,16 +34,22 @@ class IdeaGenerator:
 
     def history(self):
         files = sorted(Path("output").iterdir())
+        history = []
         for f in files:
             data = json.loads(Path(f).read_text())
             topic = data.get("topic", "Nepoznata tema")
             ideas = data.get("ideas", [])
             timestamp = datetime.fromisoformat(data.get("generated_at", "Nepoznat datum"))
+            history.append({"topic": topic, "ideas": ideas, "timestamp": timestamp.strftime('%d.%m.%Y. u %H:%M')})
+        return history
+
+    def print_ideas(self, history):
+        for entry in history:
             print("-" * 40)
-            print(f"Datum generiranja: {timestamp.strftime('%d.%m.%Y. u %H:%M')}")
-            print(f"Tema: {topic}")
+            print(f"Datum generiranja: {entry['timestamp']}")
+            print(f"Tema: {entry['topic']}")
             print("Ideje:")
-            for i, idea in enumerate(ideas, start=1):
+            for i, idea in enumerate(entry['ideas'], start=1):
                 print(f"  {i}. {idea}")
 
 def parse_args():
@@ -60,7 +66,8 @@ def main():
     count = args.count
     raw = None
     if args.history:
-        generator.history()
+        history = generator.history()
+        generator.print_ideas(history)
         return
     if not args.topic:
         print("Greška: Tema je obavezna. Dodaj --topic 'tvoja tema' argument.")
