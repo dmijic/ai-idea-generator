@@ -1,0 +1,1 @@
+from app.generator import IdeaGenerator
