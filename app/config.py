@@ -7,7 +7,5 @@ class Settings(BaseSettings):
     max_tokens: int = 1024
     port: int = 8000
     host: str = "127.0.0.1"
-    test: str = "This is a test variable"
 
-
-settings = Settings(test="This is a test variable from settings declaration")
+settings = Settings()
