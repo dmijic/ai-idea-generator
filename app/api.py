@@ -1,16 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import json
-import os
-from dotenv import load_dotenv
 from app import IdeaGenerator
-
-load_dotenv()
-api_key=os.getenv("ANTHROPIC_API_KEY")
+from app.config import settings
 
 app = FastAPI()
-generator = IdeaGenerator(api_key = api_key)
-
+generator = IdeaGenerator(api_key = settings.anthropic_api_key)
 
 class GenerateRequest(BaseModel):
     topic: str
