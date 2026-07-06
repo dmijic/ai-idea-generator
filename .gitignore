@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 output/
 random_scripts/
+scratch.py

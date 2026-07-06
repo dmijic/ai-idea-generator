@@ -1,12 +1,7 @@
-import os
 import json
 import argparse
 from app import IdeaGenerator
-from dotenv import load_dotenv
-
-load_dotenv()
-
-api_key=os.getenv("ANTHROPIC_API_KEY")
+from app.config import settings
 
 def parse_args():
     parser = argparse.ArgumentParser(description="AI Idea Generator")
@@ -17,7 +12,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    generator = IdeaGenerator(api_key = api_key)
+    generator = IdeaGenerator(api_key = settings.anthropic_api_key)
     topic = args.topic
     count = args.count
     raw = None

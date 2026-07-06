@@ -23,3 +23,6 @@ help:
 	@echo "  make test     - pokreni testove"
 	@echo "  make build    - build i pokreni Docker"
 	@echo "  make down     - ugasi Docker"
+
+s:
+	PYTHONPATH=. python random_scripts/scratch.py
