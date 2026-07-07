@@ -2,6 +2,9 @@ import json
 import argparse
 from app import IdeaGenerator
 from app.config import settings
+from app.logger import get_logger
+
+logger = get_logger(__name__)
 
 def parse_args():
     parser = argparse.ArgumentParser(description="AI Idea Generator")
@@ -32,5 +35,6 @@ def main():
         print(f"Claude nije vratio validni JSON: {raw}")
         return
     except Exception as e:
+        logger.error(f"Greška pri pozivu API-ja: {e}")
         print(f"Greška pri pozivu API-ja: {e}")
         return
