@@ -3,6 +3,9 @@ from pydantic import BaseModel
 import json
 from app import IdeaGenerator
 from app.config import settings
+from app.logger import get_logger
+
+logger = get_logger(__name__)
 
 app = FastAPI()
 generator = IdeaGenerator(api_key = settings.anthropic_api_key)
@@ -25,6 +28,7 @@ def generate_ideas(request: GenerateRequest):
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Claude nije vratio validni JSON.")
     except Exception as e:
+        logger.error(f"Error occurred while generating ideas: {e}")
         raise HTTPException(status_code=500, detail="Interna greška servera.")
 
 @app.get("/history")
@@ -33,4 +37,5 @@ def get_history():
         history = generator.history()
         return {"history": history}
     except Exception as e:
+        logger.error(f"Error occurred while fetching history: {e}")
         raise HTTPException(status_code=500, detail="Interna greška servera.")

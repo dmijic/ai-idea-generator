@@ -2,6 +2,9 @@ import json
 from anthropic import Anthropic
 from pathlib import Path
 from datetime import datetime
+from app.logger import get_logger
+
+logger = get_logger(__name__)
 
 class IdeaGenerator:
     def __init__(self, api_key: str):
@@ -16,6 +19,7 @@ class IdeaGenerator:
                 "content": f"Generiraj točno {count} ideje za sadržaj na temu: {topic}. Primjer: [\"ideja 1\", \"ideja 2\", \"ideja 3\"]. Vrati SAMO JSON array, bez backtickova, bez code blokova, bez ikakvog dodatnog teksta."
             }]
         )
+        logger.info(f"Generated {count} ideas for topic '{topic}'")
         return message.content[0].text
     
     def save(self, topic: str, ideas: list[str]) -> Path:
@@ -23,6 +27,7 @@ class IdeaGenerator:
         filename = f"output/{datetime.now().strftime('%Y%m%d_%H%M%S')}_{topic[:20]}.json"
         data = {"topic": topic, "ideas": ideas, "generated_at": datetime.now().isoformat()}
         Path(filename).write_text(json.dumps(data, indent=2, ensure_ascii=False))
+        logger.info(f"Ideas saved to {filename}")
         return Path(filename)
 
     def history(self):
